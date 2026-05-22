@@ -176,7 +176,6 @@ module slider() {
 }
 
 module pen_fixer(drill_offset = 20, drill_vertical_gap = 20, drill_horizontal_gap = 24) {
-  small_height = 18;
   height = 35;
   hole_edge_distance = 3;
   length = 105;
@@ -188,7 +187,7 @@ module pen_fixer(drill_offset = 20, drill_vertical_gap = 20, drill_horizontal_ga
 
   module drill() {
     r = 3 / 2;
-    rotate([90, 0, 0]) cylinder(3 * small_height, r=r, center=true);
+    rotate([90, 0, 0]) cylinder(3 * thickness, r=r, center=true);
   }
 
   module side_triangle() {
@@ -223,7 +222,7 @@ module pen_fixer(drill_offset = 20, drill_vertical_gap = 20, drill_horizontal_ga
         }
       }
 
-      translate([0, 0, drill_edge_gap]) drill();
+      translate([0, -holder_radius, height/2]) drill();
 
       translate([drill_offset, 0, drill_height]) drill();
       translate([-drill_offset, 0, drill_height]) drill();
