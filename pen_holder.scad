@@ -179,7 +179,7 @@ module pen_fixer(drill_offset = 20, drill_vertical_gap = 20, drill_horizontal_ga
   small_height = 18;
   height = 35;
   hole_edge_distance = 3;
-  length = 100;
+  length = 105;
   length_gap = 4;
   thickness = 2;
   holder_radius = 8;
@@ -189,6 +189,12 @@ module pen_fixer(drill_offset = 20, drill_vertical_gap = 20, drill_horizontal_ga
   module drill() {
     r = 3 / 2;
     rotate([90, 0, 0]) cylinder(3 * small_height, r=r, center=true);
+  }
+
+  module side_triangle() {
+    rotate([-90, 0, 90]) linear_extrude(height=thickness) {
+        polygon(points=[[0, 0], [20, 0], [0, height - thickness]], paths=[[0, 1, 2]]);
+      }
   }
 
   color("#2266AA") {
@@ -228,10 +234,21 @@ module pen_fixer(drill_offset = 20, drill_vertical_gap = 20, drill_horizontal_ga
       translate([drill_offset + drill_horizontal_gap, 0, drill_height + drill_vertical_gap]) drill();
       translate([-drill_offset - drill_horizontal_gap, 0, drill_height + drill_vertical_gap]) drill();
     }
+
     difference() {
-    translate([holder_radius, -thickness/2, height]) cube([length/2 - holder_radius, 40, thickness]);
-    translate([holder_radius, -thickness/2, height]) cylinder(r = 8, h= 10, center=true);
+      translate([-length / 2, -thickness / 2, height - thickness]) cube([length, 30, thickness]);
+      translate([drill_offset + drill_horizontal_gap / 2, 12, height]) cylinder(r=6, h=10, center=true);
+      translate([-drill_offset - drill_horizontal_gap / 2, 12, height]) cylinder(r=6, h=10, center=true);
+      translate([0, -thickness / 2, height - 2*thickness]) linear_extrude(height=100) {
+        hull() {
+          translate([0, holder_radius - holder_thickness / 2, 0]) circle(holder_thickness / 2);
+          translate([-holder_radius, 0, 0]) circle(holder_thickness / 2);
+          translate([holder_radius, 0, 0]) circle(holder_thickness / 2);
+        }
+      }
     }
+
+    translate([-length / 2 + thickness, -thickness / 2, height - thickness]) side_triangle();
   }
 }
 
