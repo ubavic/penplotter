@@ -2,13 +2,13 @@ $fn = 200;
 
 hole_edge_distance = 10;
 track_distance = 40.5;
-holder_lenght = 2 * hole_edge_distance + track_distance;
-holder_small_lenght = hole_edge_distance + track_distance;
+holder_length = 2 * hole_edge_distance + track_distance;
+holder_small_length = hole_edge_distance + track_distance;
 holder_width = 110;
 hole_radius = 2.6;
 plate_thickness = 2;
 wall_thickness = 5;
-belt_hloder_length = 20;
+belt_holder_length = 20;
 
 module drill() {
   cylinder(h=10, r=hole_radius, center=true);
@@ -36,16 +36,16 @@ module plate() {
   points = [
     [0, 0],
     [holder_width, 0],
-    [holder_width, holder_small_lenght],
-    [holder_width / 2 + 3 / 2 * hole_edge_distance, holder_small_lenght],
-    [holder_width / 2 + hole_edge_distance, holder_lenght],
-    [holder_width / 2 - hole_edge_distance, holder_lenght],
-    [holder_width / 2 - 3 / 2 * hole_edge_distance, holder_small_lenght],
-    [0, holder_small_lenght],
+    [holder_width, holder_small_length],
+    [holder_width / 2 + 3 / 2 * hole_edge_distance, holder_small_length],
+    [holder_width / 2 + hole_edge_distance, holder_length],
+    [holder_width / 2 - hole_edge_distance, holder_length],
+    [holder_width / 2 - 3 / 2 * hole_edge_distance, holder_small_length],
+    [0, holder_small_length],
   ];
 
   difference() {
-    translate([0, holder_lenght, plate_thickness]) rotate([180, 0, 0]) linear_extrude(plate_thickness) {
+    translate([0, holder_length, plate_thickness]) rotate([180, 0, 0]) linear_extrude(plate_thickness) {
           polygon(points=points);
         }
     translate([holder_width / 2, hole_edge_distance, 0])
@@ -53,7 +53,7 @@ module plate() {
     translate(
       [
         holder_width / 4,
-        holder_lenght - hole_edge_distance,
+        holder_length - hole_edge_distance,
         0,
       ]
     )
@@ -61,7 +61,7 @@ module plate() {
     translate(
       [
         3 * holder_width / 4,
-        holder_lenght - hole_edge_distance,
+        holder_length - hole_edge_distance,
         0,
       ]
     )
@@ -72,7 +72,7 @@ module plate() {
 belt_holder_height = 25;
 module belt_holder() {
   translate([0, 0, belt_holder_height / 2]) difference() {
-      cube([belt_hloder_length, wall_thickness, belt_holder_height], center=true);
+      cube([belt_holder_length, wall_thickness, belt_holder_height], center=true);
       cube([3, 2 * wall_thickness, 12], center=true);
     }
 }
@@ -258,8 +258,8 @@ k = 0;
 
 module pen_holder() {
   translate([holder_width / 2, hole_edge_distance, 0]) axle();
-  translate([holder_width / 4, holder_lenght - hole_edge_distance, 0]) axle();
-  translate([3 * holder_width / 4, holder_lenght - hole_edge_distance, 0]) axle();
+  translate([holder_width / 4, holder_length - hole_edge_distance, 0]) axle();
+  translate([3 * holder_width / 4, holder_length - hole_edge_distance, 0]) axle();
 
   translate([2, wall_edge_distance, -14]) rotate([90, 0, 0]) rail_holder();
   translate([2 + rail_holder_base_length / 2, wall_edge_distance - 20, -14]) rail();
@@ -272,7 +272,7 @@ module pen_holder() {
   union() {
     plate();
 
-    translate([0, -17, plate_height - belt_holder_height + plate_thickness]) translate([holder_width / 2, holder_lenght, 0]) belt_holder();
+    translate([0, -17, plate_height - belt_holder_height + plate_thickness]) translate([holder_width / 2, holder_length, 0]) belt_holder();
     translate([0, wall_edge_distance, -15]) wall(wall_thickness);
     translate([holder_width - 46, wall_edge_distance, -15]) wall(wall_thickness);
   }
