@@ -175,9 +175,69 @@ module slider() {
     }
 }
 
+module pen_fixer(drill_offset = 20, drill_vertical_gap = 20, drill_horizontal_gap = 24) {
+  small_height = 18;
+  height = 35;
+  hole_edge_distance = 3;
+  length = 100;
+  length_gap = 4;
+  thickness = 2;
+  holder_radius = 8;
+  holder_thickness = 2;
+  drill_height = 3;
+
+  module drill() {
+    r = 3 / 2;
+    rotate([90, 0, 0]) cylinder(3 * small_height, r=r, center=true);
+  }
+
+  color("#2266AA") {
+
+    difference() {
+      linear_extrude(height) {
+        difference() {
+          square([length, thickness], true);
+          circle(holder_radius - 0.5);
+        }
+
+        difference() {
+          circle(holder_radius);
+          circle(holder_radius - holder_thickness);
+          translate([-holder_radius, 1]) square(2 * holder_radius, false);
+        }
+
+        hull() {
+          translate([0, holder_radius - holder_thickness / 2, 0]) circle(holder_thickness / 2);
+          translate([-holder_radius, 0, 0]) circle(holder_thickness / 2);
+        }
+
+        hull() {
+          translate([0, holder_radius - holder_thickness / 2, 0]) circle(holder_thickness / 2);
+          translate([holder_radius, 0, 0]) circle(holder_thickness / 2);
+        }
+      }
+
+      translate([0, 0, drill_edge_gap]) drill();
+
+      translate([drill_offset, 0, drill_height]) drill();
+      translate([-drill_offset, 0, drill_height]) drill();
+      translate([drill_offset, 0, drill_height + drill_vertical_gap]) drill();
+      translate([-drill_offset, 0, drill_height + drill_vertical_gap]) drill();
+      translate([drill_offset + drill_horizontal_gap, 0, drill_height]) drill();
+      translate([-drill_offset - drill_horizontal_gap, 0, drill_height]) drill();
+      translate([drill_offset + drill_horizontal_gap, 0, drill_height + drill_vertical_gap]) drill();
+      translate([-drill_offset - drill_horizontal_gap, 0, drill_height + drill_vertical_gap]) drill();
+    }
+    difference() {
+    translate([holder_radius, -thickness/2, height]) cube([length/2 - holder_radius, 40, thickness]);
+    translate([holder_radius, -thickness/2, height]) cylinder(r = 8, h= 10, center=true);
+    }
+  }
+}
+
 plate_height = distancer_height * 2 + wheel_height;
 wall_edge_distance = 18;
-k = 10;
+k = 0;
 
 module pen_holder() {
   translate([holder_width / 2, hole_edge_distance, 0]) axle();
@@ -199,6 +259,8 @@ module pen_holder() {
     translate([0, wall_edge_distance, -15]) wall(wall_thickness);
     translate([holder_width - 46, wall_edge_distance, -15]) wall(wall_thickness);
   }
+
+  translate([holder_width / 2, wall_edge_distance - 32, k + 2]) pen_fixer();
 
   translate([0, 0, plate_height + plate_thickness]) union() {
       plate();
