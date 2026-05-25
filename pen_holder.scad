@@ -1,7 +1,7 @@
 $fn = 200;
 
 hole_edge_distance = 10;
-track_distance = 40.5;
+track_distance = 41;
 holder_length = 2 * hole_edge_distance + track_distance;
 holder_small_length = hole_edge_distance + track_distance;
 holder_width = 110;
@@ -168,26 +168,26 @@ module slider() {
               }
             }
       }
-      translate([slider_width / 2 + 12, 0, length / 2 + 10]) drill();
+      translate([slider_width / 2 + 12, 0, length / 2 + 9]) drill();
       translate([slider_width / 2 + 12, 0, length / 2 - 10]) drill();
-      translate([slider_width / 2 - 12, 0, length / 2 + 10]) drill();
+      translate([slider_width / 2 - 12, 0, length / 2 + 9]) drill();
       translate([slider_width / 2 - 12, 0, length / 2 - 10]) drill();
     }
 }
 
-module pen_fixer(drill_offset = 20, drill_vertical_gap = 20, drill_horizontal_gap = 24) {
+module pen_fixer(drill_offset = 20, drill_vertical_gap = 19, drill_horizontal_gap = 24) {
   height = 35;
   hole_edge_distance = 3;
   length = 105;
   length_gap = 4;
   thickness = 2;
-  holder_radius = 8;
+  holder_radius = 10;
   holder_thickness = 2;
   drill_height = 3;
 
   module drill() {
-    r = 3 / 2;
-    rotate([90, 0, 0]) cylinder(3 * thickness, r=r, center=true);
+    r = 2;
+    rotate([90, 0, 0]) cylinder(10 * thickness, r=r, center=true);
   }
 
   module side_triangle() {
@@ -196,11 +196,20 @@ module pen_fixer(drill_offset = 20, drill_vertical_gap = 20, drill_horizontal_ga
       }
   }
 
+  module base_triangle() {
+    rotate([-90, 0, 90]) linear_extrude(length / 2 - holder_radius) {
+        polygon(points=[[0, 0], [6, 0], [0, 5]], paths=[[0, 1, 2]]);
+      }
+  }
+
+  translate([-holder_radius + thickness / 2, 0, height]) base_triangle();
+  translate([+holder_radius - thickness / 2 + (length / 2 - holder_radius), 0, height]) base_triangle();
+
   color("#2266AA") {
     difference() {
-      translate([0, 0, -10]) linear_extrude(height + 10) {
+      translate([0, 0, 0]) linear_extrude(height) {
           difference() {
-            square([length, thickness], true);
+            translate([0, -thickness/2]) square([length, 2 * thickness], true);
             circle(holder_radius - 0.5);
           }
 
@@ -221,8 +230,8 @@ module pen_fixer(drill_offset = 20, drill_vertical_gap = 20, drill_horizontal_ga
           }
         }
 
-      translate([0, -holder_radius, height / 2]) drill();
-      translate([0, -holder_radius, 0]) drill();
+      translate([0, -holder_radius, height * 1 / 5]) drill();
+      translate([0, -holder_radius, height * 2 / 3]) drill();
 
       translate([drill_offset, 0, drill_height]) drill();
       translate([-drill_offset, 0, drill_height]) drill();
@@ -285,7 +294,7 @@ module top_plate() {
     }
 
     difference() {
-      translate([-width/2, 0, 0]) cube([width, 10, 25]);
+      translate([-width / 2, 0, 0]) cube([width, 10, 25]);
       translate([0, 0, 8]) drill();
       translate([0, 0, 18]) drill();
     }
@@ -298,6 +307,11 @@ module top_plate() {
   translate([holder_width / 2 - base_width / 2 - 3, 24, plate_thickness - 1]) servo_holder();
 }
 
+module bottom_plate() {
+  plate();
+  translate([0, wall_edge_distance, -15]) wall(wall_thickness);
+  translate([holder_width - 46, wall_edge_distance, -15]) wall(wall_thickness);
+}
 
 module pen_holder() {
   translate([holder_width / 2, hole_edge_distance, 0]) axle();
@@ -312,11 +326,7 @@ module pen_holder() {
   translate([2 + rail_holder_base_length / 2, wall_edge_distance - 20, k]) slider();
   translate([holder_width - 44 + rail_holder_base_length / 2, wall_edge_distance - 20, k]) slider();
 
-  union() {
-    plate();
-    translate([0, wall_edge_distance, -15]) wall(wall_thickness);
-    translate([holder_width - 46, wall_edge_distance, -15]) wall(wall_thickness);
-  }
+  bottom_plate();
 
   translate([holder_width / 2, wall_edge_distance - 32, k + 2]) pen_fixer();
 
