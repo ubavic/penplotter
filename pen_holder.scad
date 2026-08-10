@@ -176,7 +176,7 @@ module slider() {
 }
 
 module pen_fixer(drill_offset = 20, drill_vertical_gap = 19, drill_horizontal_gap = 24) {
-  height = 35;
+  height = 45;
   hole_edge_distance = 3;
   length = 105;
   length_gap = 4;
@@ -301,7 +301,7 @@ module top_plate() {
   }
 
   plate();
-  translate([0, -17, -belt_holder_height]) translate([holder_width / 2, holder_length, 0]) belt_holder();
+  translate([0, -15, -belt_holder_height]) translate([holder_width / 2, holder_length, 0]) belt_holder();
   translate([holder_width / 2 - base_width / 2, 25, plate_thickness - 1]) cube([base_width, 25, 2 + 1]);
   translate([holder_width / 2 + base_width / 2 + 3, 24, plate_thickness - 1]) servo_holder();
   translate([holder_width / 2 - base_width / 2 - 3, 24, plate_thickness - 1]) servo_holder();
@@ -312,6 +312,20 @@ module bottom_plate() {
   translate([0, wall_edge_distance, -15]) wall(wall_thickness);
   translate([holder_width - 46, wall_edge_distance, -15]) wall(wall_thickness);
 }
+
+module lever() {
+   h = 2;
+   
+   difference(){
+    hull(){
+        cylinder(r=13/2, h=h);
+        translate ([20,0,0]) cylinder(r=10/2, h=h);
+    }
+    translate([0,0,-1]) cylinder(r=5.5/2, h=2*h);
+    translate([-4,0,0]) cube([20,2,10], center=true);
+    }
+}
+
 
 module pen_holder() {
   translate([holder_width / 2, hole_edge_distance, 0]) axle();
@@ -333,7 +347,12 @@ module pen_holder() {
   translate([0, 0, plate_height + plate_thickness]) top_plate();
 
   //rotate([0, 0, -90]) translate([-35, 40, plate_height + 2 * plate_thickness]) servo();
-  translate([holder_width / 2, 16, plate_height + 2 * plate_thickness + 2]) servo();
+  
+  servo_base_height = plate_height + 2 * plate_thickness + 2;
+  translate([holder_width / 2, 16, servo_base_height]) servo();
+
+  translate([holder_width/2 - 10, 14,
+    servo_base_height + 10]) rotate([90,0,0]) lever();
 }
 
 pen_holder();
