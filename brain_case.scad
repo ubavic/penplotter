@@ -1,8 +1,8 @@
 $fn = 200;
 
 power_module_width = 115;
-power_module_length = 215;
-case_thickness = 3;
+power_module_length = 200;
+case_thickness = 2;
 drill_gap = 150;
 front_protrusion = -15;
 case_length = power_module_length - front_protrusion;
@@ -44,9 +44,9 @@ module case_front_wall() {
 module case_top_wall() {
   difference() {
     cube([power_module_width + 4 * case_gap, case_length, case_thickness]);
-    for (i = [0:2]) {
-      translate([10, 20 + i * 90, -2]) cube([5, 10 , 20]);
-      translate([105, 20 + i * 90, -2]) cube([5, 10 , 20]);
+    for (i = [0:1]) {
+      translate([10, 30 + i * 90, -2]) cube([5, 10 , 20]);
+      translate([105, 30 + i * 90, -2]) cube([5, 10 , 20]);
     }
   }
 }
@@ -72,4 +72,4 @@ module case() {
 }
 
 case();
-power_supply();
+//power_supply();
